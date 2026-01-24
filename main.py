@@ -4,7 +4,7 @@ from __future__ import annotations
 import math
 import random
 
-from ursina import Ursina, Entity, Text, Button, color, held_keys, mouse, application, time
+from ursina import Ursina, Entity, Text, Button, color, held_keys, mouse, application, time, Vec3
 
 import config
 from combat.combat import CombatSystem
@@ -33,8 +33,8 @@ class PauseMenu(Entity):
 
 
 class Game:
-    def __init__(self):
-        self.app = Ursina()
+    def __init__(self, app):
+        self.app = app
         self.state = GameState()
         self.save_system = SaveSystem()
         self.seed = config.SEED
@@ -54,14 +54,14 @@ class Game:
         if config.SHOW_FPS:
             Text(text='', position=(0.7, 0.45), origin=(0, 0), scale=1, name='fps_counter')
 
-        self.app.run()
-
     def load_save(self):
         data = self.save_system.load()
         if not data:
             return
         self.seed = data.get('seed', self.seed)
-        self.player.position = data.get('player_pos', self.player.position)
+        saved_pos = data.get('player_pos')
+        if saved_pos:
+            self.player.position = Vec3(*saved_pos)
         self.discovered_pois = data.get('discovered_pois', [])
         self.chunk_manager.seed = self.seed
 
@@ -211,5 +211,7 @@ def input(key):
 
 
 if __name__ == '__main__':
-    game = Game()
+    app = Ursina()
+    game = Game(app)
     application.game_instance = game
+    app.run()

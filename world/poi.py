@@ -8,7 +8,8 @@ from typing import List, Optional, Tuple
 
 from ursina import Entity, color, Vec3
 
-from config import CHUNK_SIZE, TILE_SCALE, TOWN_CHANCE, DUNGEON_CHANCE
+from config import CHUNK_SIZE, TILE_SCALE, TOWN_CHANCE, DUNGEON_CHANCE, NOISE_SCALE, HEIGHT_SCALE
+from world.noise import fbm_noise_2d
 
 
 @dataclass
@@ -26,12 +27,14 @@ def generate_pois_for_chunk(cx: int, cz: int, seed: int) -> List[POI]:
     if rng.random() < TOWN_CHANCE:
         x = (cx * CHUNK_SIZE + rng.randint(2, CHUNK_SIZE - 2)) * TILE_SCALE
         z = (cz * CHUNK_SIZE + rng.randint(2, CHUNK_SIZE - 2)) * TILE_SCALE
-        pois.append(POI(name=f"Town {cx},{cz}", position=Vec3(x, 0, z), kind="town"))
+        height = terrain_height(x, z, seed)
+        pois.append(POI(name=f"Town {cx},{cz}", position=Vec3(x, height, z), kind="town"))
 
     if rng.random() < DUNGEON_CHANCE:
         x = (cx * CHUNK_SIZE + rng.randint(2, CHUNK_SIZE - 2)) * TILE_SCALE
         z = (cz * CHUNK_SIZE + rng.randint(2, CHUNK_SIZE - 2)) * TILE_SCALE
-        pois.append(POI(name=f"Dungeon {cx},{cz}", position=Vec3(x, 0, z), kind="dungeon"))
+        height = terrain_height(x, z, seed)
+        pois.append(POI(name=f"Dungeon {cx},{cz}", position=Vec3(x, height, z), kind="dungeon"))
 
     return pois
 
@@ -71,3 +74,8 @@ def nearest_poi(pois: List[POI], position: Vec3) -> Optional[Tuple[POI, float]]:
     if best is None:
         return None
     return best, best_dist
+
+
+def terrain_height(x: float, z: float, seed: int) -> float:
+    noise = fbm_noise_2d(x * NOISE_SCALE, z * NOISE_SCALE, seed)
+    return (noise - 0.5) * 2 * HEIGHT_SCALE
