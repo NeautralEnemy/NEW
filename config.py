@@ -1,0 +1,47 @@
+"""Central configuration for the Daggerfall-like prototype."""
+
+# World generation
+SEED = 1337
+CHUNK_SIZE = 24  # tiles per side
+TILE_SCALE = 1.0
+VIEW_DISTANCE = 3  # chunks radius
+CHUNKS_PER_FRAME = 1  # incremental generation budget
+
+# Terrain
+HEIGHT_SCALE = 6.0
+NOISE_SCALE = 0.08
+WATER_HEIGHT = -1.0
+
+# Player
+MOVE_SPEED = 6.5
+SPRINT_MULTIPLIER = 1.6
+JUMP_HEIGHT = 1.5
+GRAVITY = 1.2
+MOUSE_SENSITIVITY = 35
+PLAYER_MAX_HEALTH = 100
+MELEE_RANGE = 2.2
+MELEE_COOLDOWN = 0.5
+MELEE_DAMAGE = 25
+
+# Enemies
+ENEMY_SPEED = 3.0
+ENEMY_DAMAGE = 10
+ENEMY_ATTACK_COOLDOWN = 1.2
+ENEMY_HEALTH = 50
+ENEMY_SPAWN_MIN = 2
+ENEMY_SPAWN_MAX = 5
+
+# POIs
+TOWN_CHANCE = 0.08
+DUNGEON_CHANCE = 0.06
+
+# Dungeon
+DUNGEON_SIZE = 20
+DUNGEON_STEPS = 120
+DUNGEON_ROOM_CHANCE = 0.12
+
+# Save
+SAVE_FILE = "save.json"
+
+# UI
+SHOW_FPS = True
