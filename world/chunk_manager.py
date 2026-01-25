@@ -5,11 +5,11 @@ from collections import deque
 import math
 from typing import Deque, Dict, List, Tuple
 
-from ursina import Entity, Vec3
+from ursina import Entity, Vec3, destroy
 
-from config import CHUNK_SIZE, VIEW_DISTANCE, CHUNKS_PER_FRAME
+from config import CHUNK_SIZE, VIEW_DISTANCE, CHUNKS_PER_FRAME, TILE_SCALE
 from world.chunk import Chunk
-from world.poi import POI, generate_pois_for_chunk, spawn_poi_entities
+from world.poi import POI, generate_pois_for_chunk, spawn_poi_entities, terrain_height
 
 
 class ChunkManager:
@@ -48,7 +48,7 @@ class ChunkManager:
 
         pois = generate_pois_for_chunk(cx, cz, self.seed)
         self.pois[coords] = pois
-        spawn_poi_entities(pois, self.parent)
+        spawn_poi_entities(pois, self.parent, self.seed)
         self.debug_log.append(f"Loaded chunk {coords}")
 
     def unload_chunk(self, coords: Tuple[int, int]) -> None:
@@ -57,7 +57,7 @@ class ChunkManager:
         for poi in self.pois.get(coords, []):
             if poi.entity:
                 poi.entity.disable()
-                poi.entity.delete()
+                destroy(poi.entity)
         self.pois.pop(coords, None)
         self.debug_log.append(f"Unloaded chunk {coords}")
 
@@ -71,3 +71,9 @@ class ChunkManager:
         for pois in self.pois.values():
             all_pois.extend(pois)
         return all_pois
+
+    def spawn_point(self) -> Vec3:
+        x = (CHUNK_SIZE // 2) * TILE_SCALE
+        z = (CHUNK_SIZE // 2) * TILE_SCALE
+        y = terrain_height(x, z, self.seed)
+        return Vec3(x, y + 2, z)

@@ -4,7 +4,7 @@ from __future__ import annotations
 import random
 from typing import Dict, List
 
-from ursina import Entity, Vec3, color
+from ursina import Entity, Vec3, color, destroy
 
 from config import ENEMY_SPAWN_MIN, ENEMY_SPAWN_MAX
 from dungeon.dungeon_gen import generate_layout
@@ -64,15 +64,15 @@ class DungeonScene:
     def clear(self) -> None:
         for entity in list(self.enemies.keys()):
             entity.disable()
-            entity.delete()
+            destroy(entity)
         self.enemies.clear()
         if self.portal:
             self.portal.disable()
-            self.portal.delete()
+            destroy(self.portal)
             self.portal = None
         for child in list(self.parent.children):
             child.disable()
-            child.delete()
+            destroy(child)
         self.layout = []
 
     def enable(self) -> None:

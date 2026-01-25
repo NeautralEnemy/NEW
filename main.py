@@ -4,6 +4,8 @@ from __future__ import annotations
 import math
 import random
 
+from panda3d.core import loadPrcFileData
+
 from ursina import (
     Ursina,
     Entity,
@@ -19,6 +21,7 @@ from ursina import (
     DirectionalLight,
     AmbientLight,
     window,
+    destroy,
 )
 
 import config
@@ -61,7 +64,10 @@ class Game:
         self.pause_menu = PauseMenu(self.resume_game, self.new_world, self.quit_game)
         self.discovered_pois = []
         self.last_dungeon_entrance = None
-        self.load_save()
+        loaded = self.load_save()
+        if not loaded:
+            self.player.spawn_point = self.chunk_manager.spawn_point()
+            self.player.position = self.player.spawn_point
 
         self.sky = Sky()
         self.sun = DirectionalLight()
@@ -78,13 +84,14 @@ class Game:
     def load_save(self):
         data = self.save_system.load()
         if not data:
-            return
+            return False
         self.seed = data.get('seed', self.seed)
         saved_pos = data.get('player_pos')
         if saved_pos:
             self.player.position = Vec3(*saved_pos)
         self.discovered_pois = data.get('discovered_pois', [])
         self.chunk_manager.seed = self.seed
+        return True
 
     def save(self):
         self.save_system.save(self.seed, self.player.position, self.discovered_pois)
@@ -93,8 +100,9 @@ class Game:
         self.save_system.clear()
         self.seed = random.randint(1000, 9999)
         self.chunk_manager.parent.disable()
-        self.chunk_manager.parent.delete()
+        destroy(self.chunk_manager.parent)
         self.chunk_manager = ChunkManager(seed=self.seed)
+        self.player.spawn_point = self.chunk_manager.spawn_point()
         self.player.position = self.player.spawn_point
         self.discovered_pois = []
         self.resume_game()
@@ -232,6 +240,7 @@ def input(key):
 
 
 if __name__ == '__main__':
+    loadPrcFileData('', 'win-size 1536 864')
     app = Ursina()
     window.size = (int(1536), int(864))
     game = Game(app)

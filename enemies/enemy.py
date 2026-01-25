@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ursina import Entity, Vec3, color, time
+from ursina import Entity, Vec3, color, time, destroy
 
 from config import ENEMY_SPEED, ENEMY_DAMAGE, ENEMY_ATTACK_COOLDOWN, ENEMY_HEALTH
 
@@ -27,4 +27,4 @@ class Enemy:
         self.health -= amount
         if self.health <= 0:
             self.entity.disable()
-            self.entity.delete()
+            destroy(self.entity)

@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import List, Tuple
 
-from ursina import Entity, Mesh, color
+from ursina import Entity, Mesh, color, destroy
 
 from config import CHUNK_SIZE, TILE_SCALE, HEIGHT_SCALE, NOISE_SCALE, WATER_HEIGHT
 from world.noise import fbm_noise_2d
@@ -51,14 +51,13 @@ class Chunk:
 
         mesh = Mesh(vertices=vertices, triangles=triangles, colors=colors, mode='triangle')
         mesh.generate()
-        mesh.generate_normals()
         terrain = Entity(model=mesh, color=color.white, collider='mesh', parent=self.parent)
         self.entities.append(terrain)
 
     def destroy(self) -> None:
         for entity in self.entities:
             entity.disable()
-            entity.delete()
+            destroy(entity)
         self.entities.clear()
 
     def _height_at(self, x: float, z: float) -> float:
