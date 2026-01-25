@@ -233,8 +233,7 @@ def input(key):
 
 if __name__ == '__main__':
     app = Ursina()
-    window.size = (1536, 864)
-    window.icon = None
+    window.size = (int(1536), int(864))
     game = Game(app)
     application.game_instance = game
     app.run()
