@@ -42,11 +42,13 @@ class Chunk:
                     (base_index, base_index + 2, base_index + 3),
                 ])
 
-                tile_color = color.rgb(60, 160, 80)
+                tile_color = color.rgb(70, 140, 70)
                 if height < WATER_HEIGHT + 0.5:
-                    tile_color = color.rgb(50, 90, 180)
+                    tile_color = color.rgb(40, 80, 160)
+                elif height < -1.0:
+                    tile_color = color.rgb(90, 110, 70)
                 elif height > HEIGHT_SCALE * 0.6:
-                    tile_color = color.rgb(120, 120, 120)
+                    tile_color = color.rgb(120, 120, 130)
                 colors.extend([tile_color] * 4)
 
         mesh = Mesh(vertices=vertices, triangles=triangles, colors=colors, mode='triangle')

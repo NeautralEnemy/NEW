@@ -70,7 +70,9 @@ class Game:
             self.player.position = self.player.spawn_point
 
         self.sky = Sky()
+        self.sky.color = color.rgb(120, 170, 220)
         self.sun = DirectionalLight()
+        self.sun.rotation = (50, -30, 0)
         self.ambient = AmbientLight(color=color.rgba(120, 120, 120, 255))
 
         mouse.locked = True
@@ -91,6 +93,11 @@ class Game:
             self.player.position = Vec3(*saved_pos)
         self.discovered_pois = data.get('discovered_pois', [])
         self.chunk_manager.seed = self.seed
+        start_spawn = self.chunk_manager.spawn_point()
+        if not self.discovered_pois:
+            if (self.player.position - start_spawn).length() > config.CHUNK_SIZE * config.TILE_SCALE * 2:
+                self.player.spawn_point = start_spawn
+                self.player.position = self.player.spawn_point
         return True
 
     def save(self):
