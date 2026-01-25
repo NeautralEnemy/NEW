@@ -50,6 +50,8 @@ class Chunk:
                 colors.extend([tile_color] * 4)
 
         mesh = Mesh(vertices=vertices, triangles=triangles, colors=colors, mode='triangle')
+        mesh.generate()
+        mesh.generate_normals()
         terrain = Entity(model=mesh, color=color.white, collider='mesh', parent=self.parent)
         self.entities.append(terrain)
 

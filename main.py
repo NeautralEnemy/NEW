@@ -4,7 +4,22 @@ from __future__ import annotations
 import math
 import random
 
-from ursina import Ursina, Entity, Text, Button, color, held_keys, mouse, application, time, Vec3
+from ursina import (
+    Ursina,
+    Entity,
+    Text,
+    Button,
+    color,
+    held_keys,
+    mouse,
+    application,
+    time,
+    Vec3,
+    Sky,
+    DirectionalLight,
+    AmbientLight,
+    window,
+)
 
 import config
 from combat.combat import CombatSystem
@@ -48,11 +63,17 @@ class Game:
         self.last_dungeon_entrance = None
         self.load_save()
 
+        self.sky = Sky()
+        self.sun = DirectionalLight()
+        self.ambient = AmbientLight(color=color.rgba(120, 120, 120, 255))
+
         mouse.locked = True
         self.player.cursor.enabled = False
 
         if config.SHOW_FPS:
             Text(text='', position=(0.7, 0.45), origin=(0, 0), scale=1, name='fps_counter')
+
+        self.chunk_manager.update(self.player.position)
 
     def load_save(self):
         data = self.save_system.load()
@@ -212,6 +233,8 @@ def input(key):
 
 if __name__ == '__main__':
     app = Ursina()
+    window.size = (1536, 864)
+    window.icon = None
     game = Game(app)
     application.game_instance = game
     app.run()
