@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arena Rogue Shooter</title>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #05070b; font-family: Inter, system-ui, sans-serif; }
+    #hud { position: fixed; inset: 0; pointer-events: none; color: #d9e3ff; }
+    #top { display: flex; gap: 18px; padding: 14px; font-weight: 600; }
+    .pill { background: rgba(20,28,45,.65); border: 1px solid rgba(120,170,255,.3); border-radius: 10px; padding: 8px 10px; }
+    #reticle { position: fixed; left: 50%; top: 50%; width: 20px; height: 20px; margin: -10px 0 0 -10px; }
+    #reticle::before, #reticle::after { content: ''; position: absolute; background: #9ac0ff; opacity: .85; }
+    #reticle::before { left: 9px; top: 0; width: 2px; height: 20px; }
+    #reticle::after { left: 0; top: 9px; width: 20px; height: 2px; }
+    #centerMessage {
+      position: fixed; left: 50%; top: 52%; transform: translate(-50%,-50%);
+      text-align: center; max-width: 700px; font-size: 20px; line-height: 1.35;
+      background: rgba(8,12,20,.75); border: 1px solid rgba(160,200,255,.3); border-radius: 12px; padding: 18px 22px;
+    }
+    #hitFlash { position: fixed; inset: 0; background: rgba(255,40,40,.14); opacity: 0; transition: opacity .08s; }
+  </style>
+</head>
+<body>
+  <div id="hud">
+    <div id="top">
+      <div class="pill">HP: <span id="hp">100</span></div>
+      <div class="pill">Round: <span id="round">1</span></div>
+      <div class="pill">Enemies: <span id="enemies">0</span></div>
+      <div class="pill">Score: <span id="score">0</span></div>
+    </div>
+    <div id="reticle"></div>
+    <div id="centerMessage">Click to lock pointer and start.<br/>WASD move, mouse aim, click shoot, Shift sprint. Survive each round.</div>
+    <div id="hitFlash"></div>
+  </div>
+
+  <script type="module" src="src/game.js"></script>
+</body>
+</html>
